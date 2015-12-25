@@ -273,6 +273,19 @@ static const NSTimeInterval kAnimationIntervalTransform = 0.2;
     
     if( CGRectContainsRect( [self CGRectFromRectangle:r3], r1 ) )
         self.validTransform = transform;
+    else {
+        if (self.imageView.frame.origin.x > 0) {
+            transform.tx = transform.tx - self.imageView.frame.origin.x;
+        } else if (CGRectGetMaxX(self.imageView.frame) < self.cropRect.size.width) {
+            transform.tx = transform.tx + (self.cropRect.size.width - CGRectGetMaxX(self.imageView.frame));
+        }
+        if (self.imageView.frame.origin.y > 0) {
+            transform.ty = transform.ty - self.imageView.frame.origin.y + self.cropRect.origin.y;
+        } else if (CGRectGetMaxY(self.imageView.frame) < CGRectGetMaxY(self.cropRect)) {
+            transform.ty = transform.ty + (CGRectGetMaxY(self.cropRect) - CGRectGetMaxY(self.imageView.frame));
+        }
+        self.validTransform = transform;
+    }
 }
 
 - (void) handlePan:(UIPanGestureRecognizer *)recognizer
